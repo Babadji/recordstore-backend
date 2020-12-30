@@ -3,26 +3,25 @@
     <div class="border p-10 border-grey-light shadow rounded">
       <h3 class="text-2xl mb-6 text-grey-darkest">Sign Up</h3>
       <form @submit.prevent="signup">
-        <div class="text-red" v-if="error">{{ error }}</div>
+        <div class="text-red-500" v-if="error">{{ error }}</div>
 
         <div class="mb-6">
-          <label for="email" class="block uppercase tracking-wide text-grey-darker text-xs font-bold mb-2">E-mail Address</label>
-          <input type="email" v-model="email" class="input outline-none focus:outline-none" id="email" placeholder="andy@web-crunch.com">
+          <label for="email" class="label">E-mail Address</label><br>
+          <input type="email" v-model="email" class="input w-full bg-gray-200 px-4 py-3 mt-2 rounded outline-none focus:outline-none" id="email" placeholder="jean@valjean.com">
         </div>
 
         <div class="mb-6">
           <label for="password" class="label">Password</label><br>
-          <input type="password" v-model="password" class="input outline-none focus:outline-none" id="password" placeholder="Password">
+          <input type="password" v-model="password" class="input w-full bg-gray-200 px-4 py-3 mt-2 rounded outline-none focus:outline-none" id="password" placeholder="Password">
         </div>
 
         <div class="mb-6">
-          <label for="password" class="label">Password Confirmation</label>
-          <input type="password" v-model="password_confirmation" class="input outline-none focus:outline-none" id="password_confirmation" placeholder="Password">
+          <label for="password_confirmation" class="label">Password Confirmation</label><br>
+          <input type="password" v-model="password_confirmation" class="input w-full bg-gray-200 py-3 px-4 mt-2 rounded outline-none focus:outline-none" id="password_confirmation" placeholder="Password Confirmation">
         </div>
+        <button type="submit" class="font-sans font-bold px-4 rounded cursor-pointer no-underline bg-green-500 hover:bg-green-400 block w-full py-4 text-white items-center justify-center outline-none focus:outline-none">Sign Up</button>
 
-        <button type="submit" class="font-sans font-bold px-4 rounded cursor-pointer no-underline bg-green-500 hover:bg-green-400 block w-full py-4 text-white items-center justify-center">Sign Up</button>
-
-        <div class="my-4"><router-link to="/" class="text-grey hover:bg-gray-200 px-4 py-2 rounded">Sign In</router-link></div>
+        <div class="my-4"><router-link to="/" class="text-indigo-500">Sign In</router-link></div>
       </form>
     </div>
   </div>
@@ -40,33 +39,34 @@ export default {
     }
   },
   created () {
-    this.checkSignedIn()
+    this.checkedSignedIn()
   },
   updated () {
-    this.checkSignedIn()
+    this.checkedSignedIn()
   },
   methods: {
-    signin () {
+    signup () {
       this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
-        .then(response => this.signinSuccessful(response))
-        .catch(error => this.signinFailed(error))
+        .then(response => this.signupSuccessful(response))
+        .catch(error => this.signupFailed(error))
     },
-    signinSuccessful (response) {
+    signupSuccessful (response) {
       if (!response.data.csrf) {
-        this.signinFailed(response)
+        this.signupFailed(response)
         return
       }
+
       localStorage.csrf = response.data.csrf
       localStorage.signedIn = true
       this.error = ''
       this.$router.replace('/records')
     },
-    signinFailed (error) {
+    signupFailed (error) {
       this.error = (error.response && error.response.data && error.response.data.error) || 'Something went wrong'
       delete localStorage.csrf
       delete localStorage.signedIn
     },
-    checkSignedIn () {
+    checkedSignedIn () {
       if (localStorage.signedIn) {
         this.$router.replace('/records')
       }

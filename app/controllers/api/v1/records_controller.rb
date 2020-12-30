@@ -21,7 +21,7 @@ module Api
         @record = current_user.records.build(record_params)
 
         if @record.save
-          render json: @record, status: :created, location: @record
+          render json: @record, status: :created
         else
           render json: @record.errors, status: :unprocessable_entity
         end
@@ -42,11 +42,11 @@ module Api
       end
 
       private
-        # Use callbacks to share common setup or constraints between actions.
+      # Use callbacks to share common setup or constraints between actions.
       def set_record
         @record = current_user.records.find(params[:id])
       end
-  
+
       # Only allow a trusted parameter "white list" through.
       def record_params
         params.require(:record).permit(:title, :year, :artist_id)
