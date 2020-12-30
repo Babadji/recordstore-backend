@@ -1,8 +1,8 @@
 <template>
   <div class="max-w-sm m-auto my-8">
     <div class="border p-10 border-grey-light shadow rounded">
-      <h3 class="text-2xl mb-6 text-grey-darkest">Sign In</h3>
-      <form @submit.prevent="signin">
+      <h3 class="text-2xl mb-6 text-grey-darkest">Sign Up</h3>
+      <form @submit.prevent="signup">
         <div class="text-red" v-if="error">{{ error }}</div>
 
         <div class="mb-6">
@@ -12,12 +12,17 @@
 
         <div class="mb-6">
           <label for="password" class="label">Password</label><br>
-          <input type="password" v-model="password" class="input outline-none focus:outline-none" id="password" placeholder="your password">
+          <input type="password" v-model="password" class="input outline-none focus:outline-none" id="password" placeholder="Password">
         </div>
 
-        <button type="submit" class="font-sans font-bold px-4 rounded cursor-pointer no-underline bg-green-500 hover:bg-green-400 block w-full py-4 text-white items-center justify-center">Sign In</button>
+        <div class="mb-6">
+          <label for="password" class="label">Password Confirmation</label>
+          <input type="password" v-model="password_confirmation" class="input outline-none focus:outline-none" id="password_confirmation" placeholder="Password">
+        </div>
 
-        <div class="my-4"><router-link to="/signup" class="text-grey hover:bg-gray-200 px-4 py-2 rounded">Sign up</router-link></div>
+        <button type="submit" class="font-sans font-bold px-4 rounded cursor-pointer no-underline bg-green-500 hover:bg-green-400 block w-full py-4 text-white items-center justify-center">Sign Up</button>
+
+        <div class="my-4"><router-link to="/" class="text-grey hover:bg-gray-200 px-4 py-2 rounded">Sign In</router-link></div>
       </form>
     </div>
   </div>
@@ -25,11 +30,12 @@
 
 <script>
 export default {
-  name: 'Signin',
+  name: 'Signup',
   data () {
     return {
       email: '',
       password: '',
+      password_confirmation: '',
       error: ''
     }
   },
@@ -41,7 +47,7 @@ export default {
   },
   methods: {
     signin () {
-      this.$http.plain.post('/signin', { email: this.email, password: this.password })
+      this.$http.plain.post('/signup', { email: this.email, password: this.password, password_confirmation: this.password_confirmation })
         .then(response => this.signinSuccessful(response))
         .catch(error => this.signinFailed(error))
     },
@@ -56,7 +62,7 @@ export default {
       this.$router.replace('/records')
     },
     signinFailed (error) {
-      this.error = (error.response && error.response.data && error.response.data.error) || ''
+      this.error = (error.response && error.response.data && error.response.data.error) || 'Something went wrong'
       delete localStorage.csrf
       delete localStorage.signedIn
     },
